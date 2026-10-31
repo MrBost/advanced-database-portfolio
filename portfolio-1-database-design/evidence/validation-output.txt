@@ -1,0 +1,239 @@
+BEGIN
+CREATE SCHEMA
+SET
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE VIEW
+COMMIT
+BEGIN
+SET
+INSERT 0 5
+INSERT 0 1000
+INSERT 0 500
+INSERT 0 10000
+INSERT 0 30000
+INSERT 0 8000
+INSERT 0 8000
+COMMIT
+ANALYZE
+ANALYZE
+ANALYZE
+ANALYZE
+ANALYZE
+ANALYZE
+ANALYZE
+SET
+                                         version                                          
+------------------------------------------------------------------------------------------
+ PostgreSQL 16.14 on x86_64-pc-linux-musl, compiled by gcc (Alpine 15.2.0) 15.2.0, 64-bit
+(1 row)
+
+   table_name   | rows  
+----------------+-------
+ category       |     5
+ customer       |  1000
+ book           |   500
+ customer_order | 10000
+ order_item     | 30000
+ payment        |  8000
+ delivery       |  8000
+(7 rows)
+
+DO
+BEGIN
+psql:/tmp/03-validate.sql:34: NOTICE:  PASS: expected row counts and seed business consistency
+CREATE FUNCTION
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:54: NOTICE:  PASS: unique customer email (SQLSTATE 23505)
+psql:/tmp/03-validate.sql:56: NOTICE:  PASS: unique book ISBN (SQLSTATE 23505)
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:58: NOTICE:  PASS: required book title (SQLSTATE 23502)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:60: NOTICE:  PASS: nonblank category name (SQLSTATE 23514)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:62: NOTICE:  PASS: valid category foreign key (SQLSTATE 23503)
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:64: NOTICE:  PASS: nonnegative stock (SQLSTATE 23514)
+psql:/tmp/03-validate.sql:66: NOTICE:  PASS: nonnegative book price (SQLSTATE 23514)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:68: NOTICE:  PASS: positive order quantity (SQLSTATE 23514)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:70: NOTICE:  PASS: nonnegative purchase price (SQLSTATE 23514)
+psql:/tmp/03-validate.sql:72: NOTICE:  PASS: unique order and book pair (SQLSTATE 23505)
+ expect_error 
+--------------
+ 
+(1 row)
+
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:74: NOTICE:  PASS: valid order status (SQLSTATE 23514)
+psql:/tmp/03-validate.sql:76: NOTICE:  PASS: one payment per order (SQLSTATE 23505)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:78: NOTICE:  PASS: positive payment amount (SQLSTATE 23514)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:80: NOTICE:  PASS: one delivery per order (SQLSTATE 23505)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:82: NOTICE:  PASS: valid delivery chronology (SQLSTATE 23514)
+ expect_error 
+--------------
+ 
+(1 row)
+
+psql:/tmp/03-validate.sql:84: NOTICE:  PASS: preserve referenced customer (SQLSTATE 23503)
+ expect_error 
+--------------
+ 
+(1 row)
+
+DO
+psql:/tmp/03-validate.sql:100: NOTICE:  PASS: catalogue price and customer address changes preserve order snapshots
+ROLLBACK
+ order_id |     full_name     |  status   | total_amount | paid_amount | delivery_status 
+----------+-------------------+-----------+--------------+-------------+-----------------
+        1 | Sample Customer 1 | shipped   |     11750.00 |    11750.00 | dispatched
+        2 | Sample Customer 2 | delivered |     16250.00 |    16250.00 | delivered
+        3 | Sample Customer 3 | delivered |     21500.00 |    21500.00 | delivered
+        4 | Sample Customer 4 | delivered |     25250.00 |    25250.00 | delivered
+        5 | Sample Customer 5 | pending   |     29750.00 |             | 
+(5 rows)
+
+   table_name   |              constraint_name               | constraint_type 
+----------------+--------------------------------------------+-----------------
+ book           | 16385_16411_1_not_null                     | CHECK
+ book           | 16385_16411_2_not_null                     | CHECK
+ book           | 16385_16411_3_not_null                     | CHECK
+ book           | 16385_16411_4_not_null                     | CHECK
+ book           | 16385_16411_5_not_null                     | CHECK
+ book           | 16385_16411_6_not_null                     | CHECK
+ book           | 16385_16411_7_not_null                     | CHECK
+ book           | book_author_name_check                     | CHECK
+ book           | book_isbn_check                            | CHECK
+ book           | book_stock_quantity_check                  | CHECK
+ book           | book_title_check                           | CHECK
+ book           | book_unit_price_check                      | CHECK
+ book           | book_category_id_fkey                      | FOREIGN KEY
+ book           | book_pkey                                  | PRIMARY KEY
+ book           | book_isbn_key                              | UNIQUE
+ category       | 16385_16387_1_not_null                     | CHECK
+ category       | 16385_16387_2_not_null                     | CHECK
+ category       | category_name_check                        | CHECK
+ category       | category_pkey                              | PRIMARY KEY
+ category       | category_name_key                          | UNIQUE
+ customer       | 16385_16396_1_not_null                     | CHECK
+ customer       | 16385_16396_2_not_null                     | CHECK
+ customer       | 16385_16396_3_not_null                     | CHECK
+ customer       | 16385_16396_4_not_null                     | CHECK
+ customer       | 16385_16396_5_not_null                     | CHECK
+ customer       | 16385_16396_6_not_null                     | CHECK
+ customer       | customer_address_line_check                | CHECK
+ customer       | customer_city_check                        | CHECK
+ customer       | customer_email_format                      | CHECK
+ customer       | customer_full_name_check                   | CHECK
+ customer       | customer_pkey                              | PRIMARY KEY
+ customer       | customer_email_key                         | UNIQUE
+ customer_order | 16385_16429_1_not_null                     | CHECK
+ customer_order | 16385_16429_2_not_null                     | CHECK
+ customer_order | 16385_16429_3_not_null                     | CHECK
+ customer_order | 16385_16429_4_not_null                     | CHECK
+ customer_order | 16385_16429_5_not_null                     | CHECK
+ customer_order | 16385_16429_6_not_null                     | CHECK
+ customer_order | customer_order_delivery_address_line_check | CHECK
+ customer_order | customer_order_delivery_city_check         | CHECK
+ customer_order | customer_order_status_check                | CHECK
+ customer_order | customer_order_customer_id_fkey            | FOREIGN KEY
+ customer_order | customer_order_pkey                        | PRIMARY KEY
+ delivery       | 16385_16480_1_not_null                     | CHECK
+ delivery       | 16385_16480_2_not_null                     | CHECK
+ delivery       | 16385_16480_3_not_null                     | CHECK
+ delivery       | 16385_16480_4_not_null                     | CHECK
+ delivery       | 16385_16480_5_not_null                     | CHECK
+ delivery       | delivery_dates                             | CHECK
+ delivery       | delivery_status_check                      | CHECK
+ delivery       | delivery_tracking_number_check             | CHECK
+ delivery       | delivery_order_id_fkey                     | FOREIGN KEY
+ delivery       | delivery_pkey                              | PRIMARY KEY
+ delivery       | delivery_order_id_key                      | UNIQUE
+ delivery       | delivery_tracking_number_key               | UNIQUE
+ order_item     | 16385_16444_1_not_null                     | CHECK
+ order_item     | 16385_16444_2_not_null                     | CHECK
+ order_item     | 16385_16444_3_not_null                     | CHECK
+ order_item     | 16385_16444_4_not_null                     | CHECK
+ order_item     | order_item_quantity_check                  | CHECK
+ order_item     | order_item_unit_price_at_purchase_check    | CHECK
+ order_item     | order_item_book_id_fkey                    | FOREIGN KEY
+ order_item     | order_item_order_id_fkey                   | FOREIGN KEY
+ order_item     | order_item_pkey                            | PRIMARY KEY
+ payment        | 16385_16462_1_not_null                     | CHECK
+ payment        | 16385_16462_2_not_null                     | CHECK
+ payment        | 16385_16462_3_not_null                     | CHECK
+ payment        | 16385_16462_4_not_null                     | CHECK
+ payment        | 16385_16462_5_not_null                     | CHECK
+ payment        | 16385_16462_6_not_null                     | CHECK
+ payment        | payment_amount_check                       | CHECK
+ payment        | payment_method_check                       | CHECK
+ payment        | payment_reference_check                    | CHECK
+ payment        | payment_order_id_fkey                      | FOREIGN KEY
+ payment        | payment_pkey                               | PRIMARY KEY
+ payment        | payment_order_id_key                       | UNIQUE
+ payment        | payment_reference_key                      | UNIQUE
+(77 rows)
+
