@@ -9,17 +9,6 @@
 | Example operations | Labelled create/read/update/delete output from `01-crud.js`. |
 | Suitability explanation | Main README: variable attributes, embedded authors, trade-offs and PostgreSQL responsibilities. |
 
-## Recorded validation
-
-[validation-output.txt](validation-output.txt) records the actual Codex run on **2 November 2026**, using **MongoDB 8.2.2** in an isolated local container and database `bookmania_p4`.
-
-- All three scripts completed successfully (exit code 0).
-- Setup created three documents, collection validation, the unique ISBN index and the category/title index.
-- CRUD created a temporary fourth document, displayed the three read examples, added edition 2 to Book 002 and deleted the temporary document.
-- All **seven final verification checks passed**. The separate CRUD completion PASS is also present in the log.
-- Final state: three documents, Book 002 edition 2, embedded authors retained, optional attributes preserved and the temporary book absent.
-- PostgreSQL databases were not accessed or changed by these scripts.
-
 This is supplementary agent execution evidence, not the student's run. The student screenshots and confirmed run details are documented separately below.
 
 ## Student run and screenshot index
