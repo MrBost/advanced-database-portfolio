@@ -1,0 +1,270 @@
+Agent validation: 2 November 2026, Africa/Lagos
+MongoDB server: 8.2.2
+mongosh: 2.5.9
+SETUP: BookMania document catalogue created; three sample documents.
+[
+  {
+    _id: 1,
+    isbn: '9780000000019',
+    title: 'Sample Book 001',
+    category: 'Technology',
+    authors: [
+      {
+        name: 'Sample Author 1'
+      }
+    ],
+    attributes: {
+      edition: 2,
+      language: 'English',
+      format: 'paperback',
+      pageCount: 320
+    }
+  },
+  {
+    _id: 2,
+    isbn: '9780000000026',
+    title: 'Sample Book 002',
+    category: 'Business',
+    authors: [
+      {
+        name: 'Sample Author 2'
+      },
+      {
+        name: 'Sample Co-author'
+      }
+    ],
+    attributes: {
+      language: 'English',
+      format: 'hardcover'
+    }
+  },
+  {
+    _id: 3,
+    isbn: '9780000000033',
+    title: 'Sample Book 003',
+    category: 'Fiction',
+    authors: [
+      {
+        name: 'Sample Author 3'
+      }
+    ],
+    attributes: {
+      language: 'French',
+      format: 'paperback',
+      illustrated: true
+    }
+  }
+]
+INDEXES:
+[
+  {
+    v: 2,
+    key: {
+      _id: 1
+    },
+    name: '_id_'
+  },
+  {
+    v: 2,
+    key: {
+      isbn: 1
+    },
+    name: 'isbn_unique',
+    unique: true
+  },
+  {
+    v: 2,
+    key: {
+      category: 1,
+      title: 1
+    },
+    name: 'category_title'
+  }
+]
+CREATE: temporary demonstration book
+{
+  _id: 900001,
+  isbn: '9789999000004',
+  title: 'Temporary Catalogue Demo',
+  category: 'Technology',
+  authors: [
+    {
+      name: 'Demo Author'
+    }
+  ],
+  attributes: {
+    language: 'English',
+    format: 'paperback'
+  }
+}
+READ: technology catalogue ordered by title (compound-index access pattern)
+[
+  {
+    _id: 1,
+    isbn: '9780000000019',
+    title: 'Sample Book 001',
+    category: 'Technology',
+    authors: [
+      {
+        name: 'Sample Author 1'
+      }
+    ],
+    attributes: {
+      edition: 2,
+      language: 'English',
+      format: 'paperback',
+      pageCount: 320
+    }
+  },
+  {
+    _id: 900001,
+    isbn: '9789999000004',
+    title: 'Temporary Catalogue Demo',
+    category: 'Technology',
+    authors: [
+      {
+        name: 'Demo Author'
+      }
+    ],
+    attributes: {
+      language: 'English',
+      format: 'paperback'
+    }
+  }
+]
+READ: embedded author lookup
+[
+  {
+    _id: 2,
+    isbn: '9780000000026',
+    title: 'Sample Book 002',
+    category: 'Business',
+    authors: [
+      {
+        name: 'Sample Author 2'
+      },
+      {
+        name: 'Sample Co-author'
+      }
+    ],
+    attributes: {
+      language: 'English',
+      format: 'hardcover'
+    }
+  }
+]
+READ: books with an edition attribute
+[
+  {
+    _id: 1,
+    isbn: '9780000000019',
+    title: 'Sample Book 001',
+    category: 'Technology',
+    authors: [
+      {
+        name: 'Sample Author 1'
+      }
+    ],
+    attributes: {
+      edition: 2,
+      language: 'English',
+      format: 'paperback',
+      pageCount: 320
+    }
+  }
+]
+UPDATE: add edition 2 to Sample Book 002 without changing other books
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+{
+  _id: 2,
+  isbn: '9780000000026',
+  title: 'Sample Book 002',
+  category: 'Business',
+  authors: [
+    {
+      name: 'Sample Author 2'
+    },
+    {
+      name: 'Sample Co-author'
+    }
+  ],
+  attributes: {
+    language: 'English',
+    format: 'hardcover',
+    edition: 2
+  }
+}
+DELETE: remove only the temporary demonstration book
+{
+  acknowledged: true,
+  deletedCount: 1
+}
+PASS: CRUD completed; three catalogue books remain.
+PASS: three final catalogue documents
+PASS: temporary document deleted
+PASS: edition update retained
+PASS: embedded authors retained
+PASS: optional illustrated attribute supported
+PASS: unique ISBN index exists
+PASS: category/title index exists
+FINAL CATALOGUE:
+[
+  {
+    _id: 1,
+    isbn: '9780000000019',
+    title: 'Sample Book 001',
+    category: 'Technology',
+    authors: [
+      {
+        name: 'Sample Author 1'
+      }
+    ],
+    attributes: {
+      edition: 2,
+      language: 'English',
+      format: 'paperback',
+      pageCount: 320
+    }
+  },
+  {
+    _id: 2,
+    isbn: '9780000000026',
+    title: 'Sample Book 002',
+    category: 'Business',
+    authors: [
+      {
+        name: 'Sample Author 2'
+      },
+      {
+        name: 'Sample Co-author'
+      }
+    ],
+    attributes: {
+      language: 'English',
+      format: 'hardcover',
+      edition: 2
+    }
+  },
+  {
+    _id: 3,
+    isbn: '9780000000033',
+    title: 'Sample Book 003',
+    category: 'Fiction',
+    authors: [
+      {
+        name: 'Sample Author 3'
+      }
+    ],
+    attributes: {
+      language: 'French',
+      format: 'paperback',
+      illustrated: true
+    }
+  }
+]
