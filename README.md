@@ -11,6 +11,7 @@ The case study is **BookMania**, a simulated online bookshop that manages books,
 | [Portfolio 3: Transactions and concurrency](portfolio-3-transactions-concurrency/README.md) | Completed and reviewed; transaction, isolation and concurrency evidence and reflection documented |
 | [Portfolio 4: NoSQL and advanced models](portfolio-4-nosql/README.md) | Completed and reviewed; document model, CRUD/index evidence, verification and reflection documented |
 | [Portfolio 5: Distributed and cloud databases](portfolio-5-distributed-cloud/README.md) | Completed and reviewed; replication, read-only evidence, run details and reflection documented |
+| [Final documentation](final-documentation/README.md) | Three-page summary prepared in PDF and editable Word formats |
 
 Portfolio 1 includes the ER diagram, relational schema, normalisation explanation, PostgreSQL scripts, sample data and validation evidence. I executed the scripts using pgAdmin's Query Tool and captured screenshots of the database structure, row counts and validation results.
 
