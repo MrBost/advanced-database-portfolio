@@ -1,0 +1,45 @@
+name: bookmania-p5
+services:
+  primary:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: bookmania
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:?Set REPLICATION_PASSWORD in .env}
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_INITDB_ARGS: --auth-host=scram-sha-256
+    command: ["postgres", "-c", "wal_level=replica", "-c", "max_wal_senders=5", "-c", "wal_keep_size=64MB"]
+    ports:
+      - "127.0.0.1:55435:5432"
+    volumes:
+      - primary_data:/var/lib/postgresql/data
+      - ./primary-init.sh:/docker-entrypoint-initdb.d/10-replication.sh:ro
+      - ../portfolio-1-database-design/01-schema.sql:/docker-entrypoint-initdb.d/20-schema.sql:ro
+      - ../portfolio-1-database-design/02-seed.sql:/docker-entrypoint-initdb.d/30-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d bookmania"]
+      interval: 2s
+      timeout: 3s
+      retries: 60
+  standby:
+    image: postgres:17
+    environment:
+      REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:?Set REPLICATION_PASSWORD in .env}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    entrypoint: ["bash", "/opt/bookmania/standby.sh"]
+    depends_on:
+      primary:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:55436:5432"
+    volumes:
+      - standby_data:/var/lib/postgresql/data
+      - ./standby.sh:/opt/bookmania/standby.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres -d bookmania"]
+      interval: 2s
+      timeout: 3s
+      retries: 60
+volumes:
+  primary_data:
+  standby_data:
